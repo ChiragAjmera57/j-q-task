@@ -1,18 +1,18 @@
 const inputTypesData = [
-  { type: "text", attrs: ["name", "placeholder", "maxlength"] },
-  { type: "number", attrs: ["name", "min", "max"] },
-  { type: "email", attrs: ["name", "placeholder"] },
-  { type: "checkbox", attrs: ["name", "checked"] },
-  { type: "radio", attrs: ["name", "value", "checked"] },
-  { type: "password", attrs: ["name", "minlength", "maxlength"] },
+  { type: "text", attrs: ["name", "placeholder", "maxlength","label","required"] },
+  { type: "number", attrs: ["name", "min", "max",,"label"] },
+  { type: "email", attrs: ["name", "placeholder",,"label"] },
+  { type: "checkbox", attrs: ["name", "checked",,"label"] },
+  { type: "radio", attrs: ["name", "value", "checked",,"label"] },
+  { type: "password", attrs: ["name", "minlength", "maxlength",,"label"] },
   { type: "date", attrs: ["name", "min", "max"] },
   { type: "file", attrs: ["name", "accept"] },
   { type: "color", attrs: ["name", "value"] },
-  { type: "range", attrs: ["name", "min", "max", "step", "value"] },
+  { type: "range", attrs: ["name", "min", "max", "step", "value","label"] },
   { type: "hidden", attrs: ["name", "value"] },
   { type: "submit", attrs: ["name", "value"] },
   { type: "reset", attrs: ["name", "value"] },
-  { type: "button", attrs: ["name", "value"] },
+  { type: "button", attrs: ["name", "value","disabled"] },
   { type: "image", attrs: ["name", "src", "alt"] },
   { type: "select" },
 ];
@@ -64,10 +64,14 @@ $(document).ready(function () {
   });
 
   $("main").on("click", ".delete-input", function () {
-    var prevInputOrSelect = $(this).prevAll('input:first, select:first');
+    var inputOrSelect = $(this).prevAll('input:first, select:first , button:first');
+    
+    // Also select the associated label
+    var label = inputOrSelect.prev('label');
 
-    // Remove the selected element
-    prevInputOrSelect.remove();
+    // Remove both the label and the input or select
+    inputOrSelect.remove();
+    label.remove();
     $(this).remove();
     saveData();
   });
@@ -85,16 +89,23 @@ $(document).ready(function () {
 
   $("#btn1").click(function () {
     var heading = $("#input1").val();
-    if (heading !== "") {
-      appendHeading(heading);
-      saveData();
+    if (heading === "") {
+      alert('provide heading')
+      return
+      
     }
+    appendHeading(heading);
+      saveData();
   });
 
   $("#btn2").click(function () {
     var heading = $("#dynamicSelect").val();
     var subheading = $("#input2").val();
-    if (heading !== "" && subheading !== "") {
+    if (heading === "" || subheading === "") {
+      alert('enter both value')
+      return
+    }
+    else {
       appendSubheading(heading, subheading);
       saveData();
     }
@@ -119,7 +130,8 @@ $(document).ready(function () {
       'section div:has(> h4.subheading:contains("' + userInput + '"))'
     );
     // console.log(selectedDiv, "div for input");
-    if (input3 !== "select") {
+ 
+    if (input3 === "button") {
       var elementValues = {};
 
       $('input[id="1234"]').each(function () {
@@ -127,15 +139,16 @@ $(document).ready(function () {
         var elementValue = $(this).val();
         elementValues[elementName] = elementValue;
       });
-      var newInput = $(
-        `<input class='w-50 d-block mt-2' type=${input3}><button class='delete-input'>Delete Input</button>`
+      // If input3 is "button," create a button instead of an input
+      var newButton = $(
+          `<div class='input-container'><button class='w-50 d-block mt-2'>${elementValues?.value || "Button"}</button><button class='delete-input'>Delete Input</button></div>`
       );
-      newInput.attr({
-        ...elementValues,
+      newButton.attr({
+          ...elementValues,
       });
-      selectedDiv.append(newInput);
-      saveData();
-    } else {
+      selectedDiv.append(newButton);
+  } 
+    else if(input3=="select") {
       $('input[id="1234"]').each(function () {
         var elementValue = $(this).val();
         optionsData.push(elementValue);
@@ -148,6 +161,24 @@ $(document).ready(function () {
       }
       selectedDiv.append(selectElement,deleteButton);
     }
+    else{
+      var elementValues = {};
+
+      $('input[id="1234"]').each(function () {
+        var elementName = $(this).attr("name");
+        var elementValue = $(this).val();
+        elementValues[elementName] = elementValue;
+      });
+      var newInput = $(
+        `<div class='input-container'><label>${elementValues.label || "Label"}:</label><input class='w-50 d-block mt-2' type=${input3}><button class='delete-input'>Delete Input</button></div>`
+    );
+      newInput.attr({
+        ...elementValues,
+      });
+      selectedDiv.append(newInput);
+      saveData();
+    } 
+    
   });
 
   function populateHeadingSelect() {
