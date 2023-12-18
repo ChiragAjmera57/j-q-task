@@ -1,10 +1,17 @@
+let selectedIndex;
+let selectedIndex2;
+let selectedIndex3;
+const mySubmitFunction = (e)=>{
+  e.preventDefault()
+  return false;
+}
 function saveData() {
   var contentHtml = $("main").html();
   localStorage.setItem("contentData", contentHtml);
 }
 const appendForm = (takeinputdata) => {
   takeinputdata.empty();
-  takeinputdata.append(` <form id="attributeForm">
+  takeinputdata.append(` <div id="attributeForm" class="d-flex">
   <label for="id">ID:</label>
   <input type="text" id="id" name="id">
 
@@ -29,15 +36,24 @@ const appendForm = (takeinputdata) => {
   <label for="minLength">Min Length:</label>
   <input type="number" id="minLength" name="minLength">
 
-  <!-- Add other necessary input attributes as needed -->
 
-</form>`);
+</div>`);
 };
-function handleEnterKeyPress(buttonId) {
-  $(document).off("keypress").on("keypress", function (e) {
-    if (e.which == 13) {
-      $(buttonId).click();
-    }
+
+const getIndexOfSelectedHeading = ()=>{
+  $("#dynamicSelect").on("change", function () {
+    selectedIndex = $(this).prop("selectedIndex");
+  });
+}
+const getIndexOfSelectedHeading2 = ()=>{
+  $("#selectheading").on("change", function () {
+    selectedIndex2 = $(this).prop("selectedIndex");
+    populateheadingsub()
+  });
+}
+const getIndexOfSelectedHeading3 = ()=>{
+  $("#selectsubheading").on("change", function () {
+    selectedIndex3 = $(this).prop("selectedIndex");
   });
 }
 const sortableFunction = () => {
@@ -48,16 +64,16 @@ const sortableFunction = () => {
       },
       cursor: "move",
     });
-    $(".inner-div").sortable({
+    $("aside").sortable({
       update: function (event, ui) {
         saveData();
       },
       cursor: "move",
-      connectWith: ".inner-div",
+      connectWith: "aside",
     });
     $(".mx-5").sortable({
-      connectWith: ".inner-div > div",
-      items: "> .input-container",
+      connectWith: "aside > div",
+      items: "> form",
       cursor: "move",
       update: function (event, ui) {
         saveData();
@@ -110,6 +126,9 @@ function updateSelectOptions(array, selectid) {
 $(document).ready(function () {
   loadData();
   sortableFunction();
+  getIndexOfSelectedHeading()
+  getIndexOfSelectedHeading2()
+  getIndexOfSelectedHeading3()
   $("main").on("click", ".delete-section", function () {
     $(this).closest("section").remove();
     saveData();
@@ -121,7 +140,7 @@ $(document).ready(function () {
   });
 
   $("main").on("click", ".delete-input", function () {
-    var inputContainer = $(this).closest(".input-container");
+    var inputContainer = $(this).closest("form");
 
     inputContainer.remove();
     saveData();
@@ -132,24 +151,9 @@ $(document).ready(function () {
   $("#SubheadingModalbtn").click(function () {
     populateHeadingSelect();
   });
-
-
-
-  $("#headingModal").click(() => {
-    handleEnterKeyPress("#btn1");
-  });
-
-  $("#SubheadingModalbtn").click(() => {
-    handleEnterKeyPress("#btn2");
-  });
-
   $("#form3").click(function () {
     populateHeadingSelectinput2();
-    populateheadingsub();
-    handleEnterKeyPress("#btn3");
   });
-  
-
   $("#btn1").click(function () {
     var heading = $("#input1").val();
     if (heading === "") {
@@ -165,14 +169,13 @@ $(document).ready(function () {
   $("#btn2").click(function () {
     var heading = $("#dynamicSelect").val();
     var subheading = $("#input2").val();
-    if (heading === "" || subheading === "") {
+    if (heading === "" || subheading === ""||heading=="Select Heading") {
       alert("enter both value");
       return;
     } else {
       appendSubheading(heading, subheading);
       saveData();
     }
-    populateheadingsub();
     $("#input2").val("");
     sortableFunction();
   });
@@ -183,24 +186,16 @@ $(document).ready(function () {
     const input2 = $("#selectsubheading").val();
     const input3 = $("#selctinputtype").val();
     if (
-      input1 == "Select any of the heading..." ||
-      input2 == "Select any of the heading..." ||
+      input1 == "Select heading..." ||
+      input2 == "Select subheading..." ||
       input3 == "Select any of the heading..." ||
       input2 == null 
     ) {
       alert("select all value");
       return;
     }
-    console.log(input1,input2,input3)
-    const userInput = $("#selectsubheading").val();
-    var matchingElements = $("h4.subheading:contains('" + userInput + "')");
-
-    var targetDiv = matchingElements
-      .filter(function () {
-        return $(this).text().trim() === userInput;
-      })
-      .closest(".mx-5");
-
+    var section = $("main > section").eq(selectedIndex2-1);
+    var targetDiv = section.find("aside > div.mx-5").eq(selectedIndex3-1);
     const selectedDiv = targetDiv;
     if (input3 == "select") {
       $('input[id="1234"]').each(function () {
@@ -208,7 +203,7 @@ $(document).ready(function () {
         optionsData.push(elementValue);
       });
       var selectElement = $(
-        "<div class='input-container p-2 my-2 d-flex align-items-center mx-4'><select class='form-select w-25'></select></div>"
+        "<form class=' p-2 my-2 d-flex align-items-center mx-4'><select class='form-select w-25'></select></form>"
       );
       for (let i = 0; i < optionsData.length; i++) {
         var option = $("<option>").text(optionsData[i]).val(optionsData[i]);
@@ -233,7 +228,7 @@ $(document).ready(function () {
       var minLength = $("#minLength").val();
       var name = $("#inputName").val();
       var newInput = $(
-        `<div class='input-container p-2 my-2 d-flex align-items-center mx-4'><input class='w-50 d-block mt-2'><button class='delete-input btn btn-info btn-sm'>Delete Input</button></div>`
+        `<form class=' p-2 my-2 d-flex align-items-center mx-4'><input class='w-50 d-block mt-2'><button class='delete-input btn btn-info btn-sm'>Delete Input</button></form>`
       );
       switch (input3) {
         case "text":
@@ -263,7 +258,7 @@ $(document).ready(function () {
           break;
         case "checkbox":
           newInput = $(
-            `<div class='input-container p-2 my-2 d-flex align-items-center mx-4'><button class='delete-input btn btn-info btn-sm'>Delete Input</button></div>`
+            `<form class=' p-2 my-2 d-flex align-items-center mx-4'><button class='delete-input btn btn-info btn-sm'>Delete Input</button></form>`
           );
           var checkboxValues = value.split(",");
           checkboxValues.forEach(function (checkboxValue) {
@@ -336,24 +331,24 @@ $(document).ready(function () {
 
       selectedDiv.append(newInput);
     }
-
     saveData();
-
     $("selctinputtype").val("Select any of the heading...");
   });
 
   function populateHeadingSelect() {
-    var headings = $(".heading");
+    var headings = $("h2");
     var select = $("#dynamicSelect");
     select.empty();
+    select.append("<option selected>" + "Select Heading" + "</option>");
     headings.each(function () {
       select.append("<option>" + $(this).text() + "</option>");
     });
   }
   function populateHeadingSelectinput2() {
-    var headings = $(".heading");
+    var headings = $("h2");
     var select = $("#selectheading");
     select.empty();
+    select.append("<option>" +"Select heading" + "</option>");
     headings.each(function () {
       select.append("<option>" + $(this).text() + "</option>");
     });
@@ -363,17 +358,14 @@ $(document).ready(function () {
     $("main").append(
       "<section class='bg-light w-50 my-2 p-2 position-relative'><button class='delete-section btn btn-danger position-absolute end-0 mx-2'>⨯</button><h2 class='heading'>" +
         heading +
-        "</h2><div class='inner-div p-3'></div></section>"
+        "</h2><aside class=' p-3'></aside></section>"
     );
   }
 
   function appendSubheading(heading, subheading) {
-    var section = $(".heading:contains('" + heading + "')")
-      .filter(function () {
-        return $(this).text().trim() === heading;
-      })
-      .closest("section");
-
+    getIndexOfSelectedHeading()
+    console.log(selectedIndex)
+    var section = $("main > section").eq(selectedIndex - 1);
     if (section.length === 0) {
       console.error("Section not found for heading: " + heading);
       return;
@@ -385,7 +377,7 @@ $(document).ready(function () {
         "</h4><button class='delete-subheading btn btn-danger position-absolute end-0 top-0 mx-2'>⨯</button></div>"
     );
 
-    section.find(".inner-div").append(newSubheadingDiv);
+    section.find("aside").append(newSubheadingDiv);
   }
 
   function loadData() {
@@ -396,20 +388,28 @@ $(document).ready(function () {
   }
 });
 const populateheadingsub = () => {
-  const headingText = $("#selectheading").val();
-
+  var section = $("main > section").eq(selectedIndex2-1);
+  console.log(section, "section....");
+  const h4Elements = section.find("h4.subheading");
+  
+  console.log(h4Elements,"h4elements....")
+  const h4TextArray = h4Elements.map(function() {
+    return $(this).text();
+  }).get();
+  console.log(h4TextArray)
   var selectsubheading = $("#selectsubheading");
-  var headingElement = $(".heading:contains('" + headingText + "')");
-
-  var innerDiv = headingElement.next("div.inner-div");
-
-  var subheadings = innerDiv.find("h4.subheading");
+ 
 
   selectsubheading.empty();
-
-  subheadings.each(function () {
-    selectsubheading.append("<option>" + $(this).text() + "</option>");
-  });
+  selectsubheading.append("<option>" + "select subheading" + "</option>");
+  if (h4TextArray && h4TextArray.length) {
+    for(let i=0;i<h4TextArray.length;i++){
+      selectsubheading.append("<option>" + h4TextArray[i] + "</option>");
+    }
+    
+  } else {
+    console.log("h4TextArray is not defined or empty.");
+  }
 };
 
 const handleInputtypeChange = () => {
