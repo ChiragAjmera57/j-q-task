@@ -56,16 +56,13 @@
           </div>
           <div class="modal-body">
             <select id="dynamicSelect" class="form-select" aria-label="Default select example">
-              <option selected>Open this select menu</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
+             
             </select>
             <input id="input2" type="text" class="form-control mt-2" placeholder="Enter Subheading...">
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <input id="btn2" type="submit" class="btn btn-primary" data-bs-dismiss="modal">
+            <input id="btn2" type="submit" class="btn btn-primary" >
           </div>
         </div>
       </form>
@@ -80,6 +77,7 @@
           <div class="modal-header">
             <h1 class="modal-title fs-5" id="exampleModalLabel">Enter Heading</h1>
           </div>
+          <p class="text-center text-danger " id="error"></p>
           <form action="" onsubmit="return mySubmitFunction(event)">
             <div class="modal-body">
               <label class="form-label" for="selectheading">Select Heading</label>
@@ -105,7 +103,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <input id="btn3" type="submit" class="btn btn-primary" data-bs-dismiss="modal">
+              <input id="btn3" type="submit" class="btn btn-primary" >
             </div>
           </form>
           
