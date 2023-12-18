@@ -228,9 +228,11 @@ $(document).ready(function () {
     }
     
     if (errors.length > 0) {
-      $("#error").text(errors.join("\n","."))
+      $("#error").text(errors.join("\n"))
+      errors.splice(0,errors.length)
       return;
     }
+
     var section = $("main > section").eq(selectedIndex2 - 1);
     var targetDiv = section.find("aside > div.mx-5").eq(selectedIndex3 - 1);
     const selectedDiv = targetDiv;
@@ -277,7 +279,7 @@ $(document).ready(function () {
             value: value,
             disabled: disabled ? "disabled" : undefined,
             readonly: readonly ? "readonly" : undefined,
-            require: require ? "require" : undefined,
+            required: require ? "required" : undefined,
             placeholder: placeholder,
             maxlength: maxlength,
             minlength: minLength,
@@ -291,7 +293,7 @@ $(document).ready(function () {
             value: value,
             disabled: disabled ? "disabled" : undefined,
             readonly: readonly ? "readonly" : undefined,
-            require: require ? "require" : undefined,
+             required: require ? "required" : undefined,
             placeholder: placeholder,
             maxlength: maxlength,
             minlength: minLength,
@@ -310,7 +312,7 @@ $(document).ready(function () {
               class: className,
               disabled: disabled ? "disabled" : undefined,
               readonly: readonly ? "readonly" : undefined,
-              require: require ? "require" : undefined,
+              required: require ? "required" : undefined,
             });
             var labelElement = $("<label>", {
               for: id + "_" + checkboxValue,
@@ -332,7 +334,7 @@ $(document).ready(function () {
               class: className,
               disabled: disabled ? "disabled" : undefined,
               readonly: readonly ? "readonly" : undefined,
-              require: require ? "require" : undefined,
+               required: require ? "required" : undefined,
             });
             var labelElement = $("<label>", {
               for: id + "_" + radioValues,
@@ -352,7 +354,7 @@ $(document).ready(function () {
               name: name,
               disabled: disabled ? "disabled" : undefined,
               readonly: readonly ? "readonly" : undefined,
-              require: require ? "require" : undefined,
+               required: require ? "required" : undefined,
             });
           break;
         case "range":
@@ -367,7 +369,7 @@ $(document).ready(function () {
               value: value,
               disabled: disabled ? "disabled" : undefined,
               readonly: readonly ? "readonly" : undefined,
-              require: require ? "require" : undefined,
+               required: require ? "required" : undefined,
             });
           break;
         default:
@@ -380,7 +382,7 @@ $(document).ready(function () {
               value: value,
               disabled: disabled ? "disabled" : undefined,
               readonly: readonly ? "readonly" : undefined,
-              require: require ? "require" : undefined,
+               required: require ? "required" : undefined,
               placeholder: placeholder,
               maxlength: maxlength,
               minlength: minLength,
