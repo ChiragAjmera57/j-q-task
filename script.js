@@ -102,6 +102,10 @@ const inputTypesData = [
     type: "text",
     attrs: ["name", "placeholder", "maxlength", "label", "required"],
   },
+  {
+    type: "textarea",
+    attrs: ["name", "placeholder", "maxlength", "label", "required"],
+  },
   { type: "number", attrs: ["name", "min", "max", "label"] },
   { type: "email", attrs: ["name", "placeholder", "label"] },
   { type: "checkbox", attrs: ["name", "checked", "label"] },
@@ -256,7 +260,22 @@ $(document).ready(function () {
       selectElement.append(deleteButton);
       selectedDiv.append(selectElement);
       saveData();
-    } else {
+    }
+    else if(input3 === "textarea"){
+      var selectElement = $(
+        "<form class=' p-2 my-2 d-flex align-items-center mx-4'><textarea class='form-select w-25'></textarea></form>"
+      );
+      
+
+      var deleteButton = $(
+        "<button class='delete-input btn btn-info btn-sm my-2'>Delete Input</button>"
+      );
+
+      selectElement.append(deleteButton);
+      selectedDiv.append(selectElement);
+      saveData();
+    }
+    else {
       var id = $("#id").val();
       var className = $("#class").val();
       var value = $("#value").val();
@@ -491,7 +510,7 @@ const handleInputtypeChange = () => {
 
   const commonHiddenFields = ["placeholder", "maxlength", "minLength"];
 
-  if (input3 === "select" || input3 === "button") {
+  if (input3 === "select" ) {
     const numberInput = $("<input>", {
       type: "number",
       placeholder: "Enter the number of options",
@@ -516,7 +535,10 @@ const handleInputtypeChange = () => {
 
       takeinputdata.show();
     });
-  } else if (
+  } 
+ 
+  
+  else if (
     input3 === "checkbox" ||
     input3 === "radio" ||
     input3 === "date" ||
@@ -524,7 +546,9 @@ const handleInputtypeChange = () => {
     input3 === "color" ||
     input3 === "range" ||
     input3 === "hidden" ||
-    input3 === "submit"
+    input3 === "submit" || 
+    input3 === "button"
+    
   ) {
     takeinputdata.empty();
     appendForm(takeinputdata);
